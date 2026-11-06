@@ -24,7 +24,7 @@ function calculate(s) {
 if (typeof module !== 'undefined') module.exports = {calculate};
 if (typeof document !== 'undefined') (() => {
   const KEY = 'position-calculator-v1';
-  const defaults = {mode:'change',direction:'long',margin:'50',entry:'100',exit:'105',leveraged:true,leverage:'20',movement:'2',sizing:'margin',quantity:'10',fees:false,feeRate:'0.05',theme:'dark',presets:{leverage:[1,5,10,20,50,100],change:[-5,-2,2,5,10],roi:[-50,-20,20,50,100]}};
+  const defaults = {mode:'change',direction:'long',margin:'50',entry:'100',exit:'105',leveraged:true,leverage:'20',movement:'2',sizing:'margin',quantity:'10',fees:false,feeRate:'0.05',theme:(typeof matchMedia==='function'&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark',presets:{leverage:[1,5,10,20,50,100],change:[-5,-2,2,5,10],roi:[-50,-20,20,50,100]}};
   let state = structuredClone(defaults), storageOK = true, result = null;
   try { const saved = JSON.parse(localStorage.getItem(KEY)); if (saved && typeof saved === 'object') { for (const key of Object.keys(defaults)) if (key !== 'presets' && typeof saved[key] === typeof defaults[key]) state[key] = saved[key]; for (const key of ['leverage','change','roi']) if (Array.isArray(saved.presets?.[key])) state.presets[key] = saved.presets[key].filter(v => typeof v === 'number' && Number.isFinite(v) && (key !== 'leverage' || (v >= 1 && v <= 1000))).slice(0,20); } } catch {storageOK=false;}
   if (!['change','roi','prices'].includes(state.mode)) state.mode='change';
@@ -39,7 +39,7 @@ if (typeof document !== 'undefined') (() => {
   const signed = (v, suffix='') => `${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v).toLocaleString('en-US',{maximumFractionDigits:2,minimumFractionDigits:2})}${suffix}`;
   function save(){try{localStorage.setItem(KEY,JSON.stringify(state));storageOK=true;}catch{storageOK=false;}}
   function presets(id,key){$(id).replaceChildren(...state.presets[key].map(v=>{const b=document.createElement('button');b.textContent=key==='leverage'?`${v}×`:`${v>0?'+':''}${v}%`;b.classList.toggle('active',Number(state[key==='leverage'?'leverage':'movement'])===v);b.onclick=()=>{state[key==='leverage'?'leverage':'movement']=String(v);sync();render();save();};return b;}));}
-  function sync(){numeric.forEach(k=>$(k).value=state[k]);['leveraged','fees'].forEach(k=>$(k).checked=state[k]);$('sizing').value=state.sizing;document.body.classList.toggle('light',state.theme==='light');$('theme').textContent=state.theme==='light'?'Dark mode':'Light mode';}
+  function sync(){numeric.forEach(k=>$(k).value=state[k]);['leveraged','fees'].forEach(k=>$(k).checked=state[k]);$('sizing').value=state.sizing;document.documentElement.dataset.theme=state.theme;const tc=document.getElementById('theme-color');if(tc)tc.content=state.theme==='light'?'#e4e4e4':'#0f0f0f';$('theme').textContent=state.theme==='light'?'Dark mode':'Light mode';}
   function render(){
     document.querySelectorAll('[data-mode]').forEach(b=>{const active=b.dataset.mode===state.mode;b.classList.toggle('active',active);b.setAttribute('aria-pressed',active);});
     document.querySelectorAll('[data-direction]').forEach(b=>{const active=b.dataset.direction===state.direction;b.classList.toggle('active',active);b.setAttribute('aria-pressed',active);});
