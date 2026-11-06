@@ -6,7 +6,7 @@ A responsive, dependency-free calculator for linear USDT-margined futures. Engli
 
 Open `index.html` in a modern browser. Keep `index.html`, `style.css`, and `app.js` together. All calculations work offline; no market data, fonts, libraries, or APIs are downloaded. Node is only needed to run tests, not the app.
 
-For the live preview in this session, visit http://127.0.0.1:4173/ while the preview server is running.
+Live site: https://bublaaaaa.github.io/trading-pnl-calculator/
 
 Inputs, settings, and presets save in localStorage. Storage belongs to each browser and origin: local files, localhost, and deployed sites do not share settings. Some browsers restrict storage or clipboard access for local files; an on-screen message reports unavailable storage/copy support.
 
@@ -56,6 +56,5 @@ A local copy works completely offline. A hosted page already loaded also continu
 - `style.css`: responsive styling and themes
 - `app.js`: pure calculator plus UI/persistence/preset handling
 - `test.js`: dependency-free numerical tests
-- `AGENTS.md`: maintenance instructions
 
-Quick-action rows include Customize buttons that open the matching preset group directly. Empty leverage and values below 1 automatically become 1× while typing and when restoring saved inputs.
+Quick-action rows include Customize buttons that open the matching preset group directly. Empty leverage and values below 1 become 1× when you leave the field and when restoring saved inputs.

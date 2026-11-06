@@ -58,7 +58,9 @@ if (typeof document !== 'undefined') (() => {
     if(result.liquidation){$('warning').hidden=false;$('warning').textContent='Liquidation risk: theoretical loss reaches or exceeds the initial isolated margin. This exit scenario is not an executable outcome; liquidation may occur earlier. An exact liquidation price requires exchange maintenance-margin rules.';}
     else if(!storageOK){$('warning').hidden=false;$('warning').textContent='Device storage is unavailable. Calculations work, but changes may not persist after closing.';}
   }
-  numeric.forEach(k=>$(k).addEventListener('input',()=>{state[k]=k==='leverage'?normalizeLeverage($(k).value):$(k).value;if(k==='leverage' && $(k).value!==state[k])$(k).value=state[k];save();render();}));
+  numeric.forEach(k=>$(k).addEventListener('input',()=>{state[k]=$(k).value;save();render();}));
+  // Leverage is only snapped to a valid value once editing is done, so the field can be cleared and retyped.
+  $('leverage').addEventListener('change',()=>{state.leverage=normalizeLeverage($('leverage').value);$('leverage').value=state.leverage;save();render();});
   ['leveraged','fees'].forEach(k=>$(k).onchange=()=>{state[k]=$(k).checked;save();render();});
   $('sizing').onchange=()=>{if(result){if($('sizing').value==='quantity')state.quantity=String(result.quantity);else state.margin=String(result.margin);}state.sizing=$('sizing').value;save();sync();render();};
   document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{if(result){state.movement=String(b.dataset.mode==='roi'?result.grossRoi:result.movement);state.exit=String(result.exit);}state.mode=b.dataset.mode;save();sync();render();});
